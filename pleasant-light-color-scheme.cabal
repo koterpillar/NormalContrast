@@ -14,7 +14,13 @@ build-type:     Simple
 executable pleasant-light-color-scheme
   main-is: Main.hs
   other-modules:
+      Ansi
+      AnsiColor
+      Color
+      ColorScheme
       Paths_pleasant_light_color_scheme
+  hs-source-dirs:
+      ./
   build-depends:
       base
     , microlens

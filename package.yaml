@@ -6,6 +6,7 @@ maintainer: Alexey Kotlyarov <a@koterpillar.com>
 
 executable:
   main: Main.hs
+  source-dirs: .
   dependencies:
     - base
     - microlens
