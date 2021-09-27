@@ -38,16 +38,26 @@ showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 
 tableCS :: ColorScheme -> String
 tableCS cs =
-  table (Nothing : map Just ansiColors) ansiColors showCol showRow cell
+  table
+    (Nothing : map (Just . Normal) primColors)
+    ansiColors
+    showCol
+    showRow
+    cell
   where
     showCol Nothing  = ""
     showCol (Just c) = withForeground c $ showAnsiColor c
     showRow c = withBackground c $ showAnsiColor c
     cell Nothing c    = showD $ contrast (cs ^. background) (cs ^. csColor c)
-    cell (Just c1) c2 = showD $ contrast (cs ^. csColor c1) (cs ^. csColor c2)
+    cell (Just c1) c2 = showContrast cs c1 c2
+
+showContrast :: ColorScheme -> AnsiColor -> AnsiColor -> String
+showContrast _ (Normal _) (Normal _) = ""
+showContrast _ (Bright _) (Bright _) = ""
+showContrast cs c1 c2 = showD $ contrast (cs ^. csColor c1) (cs ^. csColor c2)
 
 showD :: Double -> String
-showD v = show $ (fromIntegral (round (v * 100)) :: Double) / 100
+showD v = show $ (fromIntegral (round (v * 10)) :: Double) / 10
 
 naiveCS :: ColorScheme
 naiveCS =

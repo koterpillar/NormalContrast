@@ -13,6 +13,9 @@ data PrimColor
   | White
   deriving (Eq, Ord, Bounded, Enum, Show)
 
+primColors :: [PrimColor]
+primColors = [minBound .. maxBound]
+
 primColorCount :: Int
 primColorCount = fromEnum (maxBound :: PrimColor) + 1
 
