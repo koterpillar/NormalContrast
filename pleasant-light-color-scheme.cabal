@@ -1,0 +1,22 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           pleasant-light-color-scheme
+version:        0.0.1
+synopsis:       Light color scheme generator
+description:    See README
+maintainer:     Alexey Kotlyarov <a@koterpillar.com>
+build-type:     Simple
+
+executable pleasant-light-color-scheme
+  main-is: Main.hs
+  other-modules:
+      Paths_pleasant_light_color_scheme
+  build-depends:
+      base
+    , microlens
+    , microlens-th
+  default-language: Haskell2010

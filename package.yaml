@@ -1,0 +1,12 @@
+name: pleasant-light-color-scheme
+version: 0.0.1
+synopsis: Light color scheme generator
+description: See README
+maintainer: Alexey Kotlyarov <a@koterpillar.com>
+
+executable:
+  main: Main.hs
+  dependencies:
+    - base
+    - microlens
+    - microlens-th
