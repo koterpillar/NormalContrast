@@ -3,9 +3,8 @@
 import           Ansi
 import           AnsiColor
 import           Color
+import           ColorScheme
 
 main :: IO ()
 main = do
-  putStrLn $ "24-bit yellow: " ++ sample (Color 255 255 0)
-  putStrLn $ "magenta: " ++ sample (Normal Magenta)
-  putStrLn $ "bright magenta: " ++ sample (Bright Magenta)
+  putStrLn $ sampleCS naiveCS

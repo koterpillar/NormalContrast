@@ -11,12 +11,29 @@ data PrimColor
   | Magenta
   | Cyan
   | White
-  deriving (Eq, Ord, Bounded, Enum)
+  deriving (Eq, Ord, Bounded, Enum, Show)
+
+primColorCount :: Int
+primColorCount = fromEnum (maxBound :: PrimColor) + 1
 
 data AnsiColor
   = Normal PrimColor
   | Bright PrimColor
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
+
+instance Bounded AnsiColor where
+  minBound = Normal minBound
+  maxBound = Bright maxBound
+
+instance Enum AnsiColor where
+  fromEnum (Normal c) = fromEnum c
+  fromEnum (Bright c) = primColorCount + fromEnum c
+  toEnum i
+    | i < primColorCount = Normal $ toEnum i
+    | otherwise = Bright $ toEnum $ i - primColorCount
+
+ansiColors :: [AnsiColor]
+ansiColors = [minBound .. maxBound]
 
 instance IsColor AnsiColor where
   setForeground (Normal c) = colorSeq [fromEnum c + 30]
