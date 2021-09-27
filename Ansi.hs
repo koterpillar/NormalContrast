@@ -5,6 +5,8 @@ module Ansi
   , withForeground
   , withBackFore
   , sample
+  , stripColor
+  , ansiLength
   ) where
 
 import           Data.List
@@ -33,3 +35,11 @@ withBackFore b f s = setBackground b ++ setForeground f ++ s ++ reset
 
 sample :: IsColor a => a -> String
 sample c = withBackground c "background" ++ " " ++ withForeground c "foreground"
+
+stripColor :: String -> String
+stripColor []            = []
+stripColor ('\x1b':rest) = stripColor $ tail $ dropWhile (/= 'm') rest
+stripColor (c:rest)      = c : stripColor rest
+
+ansiLength :: String -> Int
+ansiLength = length . stripColor

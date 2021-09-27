@@ -2,6 +2,8 @@ module Table where
 
 import           Control.Monad
 
+import           Ansi
+
 table ::
      [col]
   -> [row]
@@ -26,9 +28,9 @@ tableShow cols rows f = table cols rows show show (\col row -> show $ f col row)
 stringTable :: [[String]] -> String
 stringTable cells = unlines $ map mkRow cells
   where
-    maxWidth = maximum $ map length $ join cells
+    maxWidth = maximum $ map ansiLength $ join cells
     mkRow = unwords . map (pad maxWidth)
 
-pad :: Int -> [Char] -> [Char]
-pad w []     = replicate w ' '
-pad w (x:xs) = x : pad (w - 1) xs
+pad :: Int -> String -> String
+pad desiredLength string =
+  string ++ replicate (max 0 $ desiredLength - ansiLength string) ' '
