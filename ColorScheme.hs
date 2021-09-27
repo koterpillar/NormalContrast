@@ -54,6 +54,10 @@ tableCS cs =
 showContrast :: ColorScheme -> AnsiColor -> AnsiColor -> String
 showContrast _ (Normal _) (Normal _) = ""
 showContrast _ (Bright _) (Bright _) = ""
+showContrast _ (Normal c1) (Bright c2)
+  | c1 == c2 = ""
+showContrast _ (Bright c1) (Normal c2)
+  | c1 == c2 = ""
 showContrast cs c1 c2 = showD $ contrast (cs ^. csColor c1) (cs ^. csColor c2)
 
 showD :: Double -> String
