@@ -8,3 +8,4 @@ import           ColorScheme
 main :: IO ()
 main = do
   putStrLn $ sampleCS naiveCS
+  putStrLn $ tableCS naiveCS

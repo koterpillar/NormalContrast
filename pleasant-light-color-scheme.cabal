@@ -18,6 +18,7 @@ executable pleasant-light-color-scheme
       AnsiColor
       Color
       ColorScheme
+      Table
       Paths_pleasant_light_color_scheme
   hs-source-dirs:
       ./
