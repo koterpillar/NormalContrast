@@ -23,7 +23,8 @@ makeLenses ''ColorScheme
 sampleCS :: ColorScheme -> String
 sampleCS cs = unlines $ map showColor ansiColors
   where
-    showColor c = withBackFore (cs ^. background) c (show c)
+    showColor c =
+      withBackFore (cs ^. background) (cs ^. colors . to ($ c)) (show c)
 
 naiveCS :: ColorScheme
 naiveCS =
@@ -39,7 +40,7 @@ naiveCS =
           Normal Magenta -> mkMagenta 128
           Normal Cyan -> mkCyan 128
           Normal White -> mkGrey 192
-          Bright Black -> mkGrey 255
+          Bright Black -> mkGrey 128
           Bright Red -> mkRed 255
           Bright Green -> mkGreen 255
           Bright Yellow -> mkYellow 255
