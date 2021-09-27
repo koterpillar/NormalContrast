@@ -26,7 +26,7 @@ instance IsColor Color where
 
 -- https://www.accessibility-developer-guide.com/knowledge/colours-and-contrast/how-to-calculate/
 luminance :: Color -> Double
-luminance c = sum vs / 3
+luminance c = sum vs / 3 / 255
   where
     is = c ^.. components
     vs = map fromIntegral is
