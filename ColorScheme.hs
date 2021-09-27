@@ -21,10 +21,15 @@ data ColorScheme =
 makeLenses ''ColorScheme
 
 sampleCS :: ColorScheme -> String
-sampleCS cs = unlines $ map showColor ansiColors
+sampleCS cs = unwords $ map showColor ansiColors
   where
     showColor c =
-      withBackFore (cs ^. background) (cs ^. colors . to ($ c)) (show c)
+      withBackFore
+        (cs ^. background)
+        (cs ^. colors . to ($ c))
+        [primColorSym $ ansiToPrim c]
+    ansiToPrim (Normal c) = c
+    ansiToPrim (Bright c) = c
 
 naiveCS :: ColorScheme
 naiveCS =
@@ -49,3 +54,6 @@ naiveCS =
           Bright Cyan -> mkCyan 255
           Bright White -> mkGrey 255
     }
+-- contrast between:
+-- * background and all colors
+-- * all normal and all bright, pairwise

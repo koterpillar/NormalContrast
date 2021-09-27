@@ -16,6 +16,16 @@ data PrimColor
 primColorCount :: Int
 primColorCount = fromEnum (maxBound :: PrimColor) + 1
 
+primColorSym :: PrimColor -> Char
+primColorSym Black   = 'K'
+primColorSym Red     = 'R'
+primColorSym Green   = 'G'
+primColorSym Yellow  = 'Y'
+primColorSym Blue    = 'B'
+primColorSym Magenta = 'M'
+primColorSym Cyan    = 'C'
+primColorSym White   = 'W'
+
 data AnsiColor
   = Normal PrimColor
   | Bright PrimColor
