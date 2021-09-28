@@ -26,14 +26,19 @@ instance IsColor Color where
   setForeground c = colorSeq [38, 2, c ^. red, c ^. green, c ^. blue]
   setBackground c = colorSeq [48, 2, c ^. red, c ^. green, c ^. blue]
 
--- https://www.accessibility-developer-guide.com/knowledge/colours-and-contrast/how-to-calculate/
 -- Luminance is not that easy, see https://stackoverflow.com/a/596241/288201
+-- https://contrastchecker.com/ and
+-- https://webaim.org/resources/contrastchecker/ agree on this formula
 luminance :: Color -> Double
 luminance c = 0.2126 * r + 0.7152 * g + 0.0722 * b
   where
-    r = fromIntegral (c ^. red) / 255
-    g = fromIntegral (c ^. green) / 255
-    b = fromIntegral (c ^. blue) / 255
+    gamma v
+      | v <= 0.03928 = v / 12.92
+      | otherwise = ((v + 0.055) / 1.055) ** 2.4
+    toRange v = fromIntegral v / 255
+    r = gamma $ toRange (c ^. red)
+    g = gamma $ toRange (c ^. green)
+    b = gamma $ toRange (c ^. blue)
 
 allColors :: [Color]
 allColors = [Color r g b | r <- range, g <- range, b <- range]
