@@ -4,7 +4,6 @@ module Ansi
   , withBackground
   , withForeground
   , withBackFore
-  , sample
   , stripColor
   , ansiLength
   ) where
@@ -32,9 +31,6 @@ withForeground f s = setForeground f ++ s ++ reset
 
 withBackFore :: (IsColor b, IsColor f) => b -> f -> String -> String
 withBackFore b f s = setBackground b ++ setForeground f ++ s ++ reset
-
-sample :: IsColor a => a -> String
-sample c = withBackground c "background" ++ " " ++ withForeground c "foreground"
 
 stripColor :: String -> String
 stripColor []            = []
