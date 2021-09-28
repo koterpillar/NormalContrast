@@ -57,8 +57,40 @@ contrast c1 c2 = (la + 0.05) / (lb + 0.05)
     l2 = luminance c2
 
 -- https://www.accessibility-developer-guide.com/knowledge/colours-and-contrast/text/
-legibleContrast :: Double
-legibleContrast = 4.5
+perfectContrast :: Double
+perfectContrast = 4.5
+
+goodContrast :: Double
+goodContrast = 3.0
+
+lastResortContrast :: Double
+lastResortContrast = 1.7 -- experimental
+
+makeByLuminance :: (Int -> Color) -> Double -> Color
+makeByLuminance mk l = makeByInternal [0 .. 255] luminousEnough mk
+  where
+    luminousEnough c = luminance c >= l
+
+makeByContrastLight :: (Int -> Color) -> Color -> Double -> Color
+makeByContrastLight = makeByContrastInternal [0 .. 255] (>)
+
+makeByContrastDark :: (Int -> Color) -> Color -> Double -> Color
+makeByContrastDark = makeByContrastInternal [255,254 .. 0] (<)
+
+makeByContrastInternal ::
+     [Int]
+  -> (Double -> Double -> Bool)
+  -> (Int -> Color)
+  -> Color
+  -> Double
+  -> Color
+makeByContrastInternal rng lumPred mk cb v = makeByInternal rng good mk
+  where
+    good c = enoughContrast c cb && luminance c `lumPred` luminance cb
+    enoughContrast c1 c2 = contrast c1 c2 >= v
+
+makeByInternal :: [Int] -> (Color -> Bool) -> (Int -> Color) -> Color
+makeByInternal rng pred mk = head $ filter pred $ map mk rng
 
 mkGrey :: Int -> Color
 mkGrey v = Color v v v

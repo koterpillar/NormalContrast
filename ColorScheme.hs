@@ -48,17 +48,21 @@ tableCS cs =
     showCol Nothing  = ""
     showCol (Just c) = withForeground c $ showAnsiColor c
     showRow c = withBackground c $ showAnsiColor c
-    cell Nothing c    = showD $ contrast (cs ^. background) (cs ^. csColor c)
-    cell (Just c1) c2 = showContrast cs c1 c2
+    cell Nothing c    = showContrast (cs ^. background) (cs ^. csColor c)
+    cell (Just c1) c2 = showContrastCS cs c1 c2
 
-showContrast :: ColorScheme -> AnsiColor -> AnsiColor -> String
-showContrast _ (Normal _) (Normal _) = ""
-showContrast _ (Bright _) (Bright _) = ""
-showContrast _ (Normal c1) (Bright c2)
+showContrastCS :: ColorScheme -> AnsiColor -> AnsiColor -> String
+showContrastCS _ (Normal _) (Normal _) = ""
+showContrastCS _ (Bright _) (Bright _) = ""
+showContrastCS _ (Normal c1) (Bright c2)
   | c1 == c2 = ""
-showContrast _ (Bright c1) (Normal c2)
+showContrastCS _ (Bright c1) (Normal c2)
   | c1 == c2 = ""
-showContrast cs c1 c2 = showD $ contrast (cs ^. csColor c1) (cs ^. csColor c2)
+showContrastCS cs c1 c2 = showContrast (cs ^. csColor c1) (cs ^. csColor c2)
+
+showContrast :: Color -> Color -> String
+showContrast c1 c2 =
+  withBackFore c1 c2 "x" ++ withBackFore c2 c1 "x" ++ showD (contrast c1 c2)
 
 showD :: Double -> String
 showD v = show $ (fromIntegral (round (v * 10)) :: Double) / 10
@@ -86,6 +90,30 @@ naiveCS =
           Bright Cyan -> mkCyan 255
           Bright White -> mkGrey 255
     }
+
 -- contrast between:
 -- * background and all colors
 -- * all normal and all bright, pairwise
+contrastCS :: ColorScheme
+contrastCS = ColorScheme {_background = white, _colors = colors}
+  where
+    white = mkGrey 255
+    black = mkGrey 0
+    againstWhite mk = makeByContrastDark mk white goodContrast
+    againstBlack mk = makeByContrastLight mk black goodContrast
+    colors (Normal Black) = black
+    colors (Normal Red) = againstBlack mkRed
+    colors (Normal Green) = againstBlack mkGreen
+    colors (Normal Yellow) = againstBlack mkYellow
+    colors (Normal Blue) = mkBlue 128
+    colors (Normal Magenta) = againstBlack mkMagenta
+    colors (Normal Cyan) = againstBlack mkCyan
+    colors (Normal White) = againstBlack mkGrey
+    colors (Bright Black) = againstWhite mkGrey
+    colors (Bright Red) = againstWhite mkRed
+    colors (Bright Green) = againstWhite mkGreen
+    colors (Bright Yellow) = againstWhite mkYellow
+    colors (Bright Blue) = againstWhite mkBlue
+    colors (Bright Magenta) = againstWhite mkMagenta
+    colors (Bright Cyan) = againstWhite mkCyan
+    colors (Bright White) = makeByContrastDark mkGrey white lastResortContrast

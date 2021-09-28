@@ -11,5 +11,7 @@ import           ColorScheme
 
 main :: IO ()
 main = do
-  putStrLn $ join $ map (`withBackground` " ") allColorsByLuminance
+  putStrLn "Naive"
   putStrLn $ tableCS naiveCS
+  putStrLn "Contrast white"
+  putStrLn $ tableCS contrastCS
