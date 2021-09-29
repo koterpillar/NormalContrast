@@ -64,16 +64,19 @@ goodContrast = 3.0
 lastResortContrast :: Double
 lastResortContrast = 1.7 -- experimental
 
+colorArgRange :: [Int]
+colorArgRange = [0 .. 255]
+
 makeByLuminance :: (Int -> Color) -> Double -> Color
-makeByLuminance mk l = makeByInternal [0 .. 255] luminousEnough mk
+makeByLuminance mk l = makeByInternal colorArgRange luminousEnough mk
   where
     luminousEnough c = luminance c >= l
 
 makeByContrastLight :: (Int -> Color) -> Color -> Double -> Color
-makeByContrastLight = makeByContrastInternal [0 .. 255] (>)
+makeByContrastLight = makeByContrastInternal colorArgRange (>)
 
 makeByContrastDark :: (Int -> Color) -> Color -> Double -> Color
-makeByContrastDark = makeByContrastInternal [255,254 .. 0] (<)
+makeByContrastDark = makeByContrastInternal (reverse colorArgRange) (<)
 
 makeByContrastInternal ::
      [Int]
