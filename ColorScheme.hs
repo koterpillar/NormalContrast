@@ -12,7 +12,6 @@ import           Lens.Micro.TH
 import           Ansi
 import           AnsiColor
 import           Color
-import           Table
 
 data ColorScheme =
   ColorScheme
@@ -36,20 +35,27 @@ showAnsiColor :: AnsiColor -> String
 showAnsiColor (Normal c) = [toLower $ primColorSym c]
 showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 
-tableCS :: ColorScheme -> String
-tableCS cs =
-  table
-    (Nothing : map (Just . Normal) primColors)
-    ansiColors
-    showCol
-    showRow
-    cell
+displayCS :: ColorScheme -> String
+displayCS cs = unlines $ map colorLineCS primColors ++ [ruler]
   where
-    showCol Nothing  = ""
-    showCol (Just c) = withForeground c $ showAnsiColor c
-    showRow c = withBackground c $ showAnsiColor c
-    cell Nothing c    = showContrast (cs ^. background) (cs ^. csColor c)
-    cell (Just c1) c2 = showContrastCS cs c1 c2
+    displayWidth = 3
+    square :: IsColor c => c -> String
+    square c = "[" ++ withBackground c " " ++ "]"
+    colorLineCS c =
+      colorLine 0 $
+      nub
+        [ cs ^. csColor (Normal Black)
+        , cs ^. csColor (Normal c)
+        , cs ^. csColor (Bright c)
+        , cs ^. background
+        ]
+    colorLine _ [] = ""
+    colorLine prevPos (c:rest) = padding ++ square c ++ colorLine nextPos rest
+      where
+        colorPos = round (linearLuminance c * 40)
+        nextPos = colorPos + displayWidth
+        padding = replicate (colorPos - prevPos) ' '
+    ruler = "TODO"
 
 showContrastCS :: ColorScheme -> AnsiColor -> AnsiColor -> String
 showContrastCS _ (Normal _) (Normal _) = ""

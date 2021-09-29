@@ -12,6 +12,6 @@ import           ColorScheme
 main :: IO ()
 main = do
   putStrLn "Naive"
-  putStrLn $ tableCS naiveCS
+  putStrLn $ displayCS naiveCS
   putStrLn "Contrast white"
-  putStrLn $ tableCS contrastCS
+  putStrLn $ displayCS contrastCS

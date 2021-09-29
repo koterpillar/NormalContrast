@@ -48,13 +48,11 @@ allColors = [Color r g b | r <- range, g <- range, b <- range]
 allColorsByLuminance :: [Color]
 allColorsByLuminance = sortOn luminance allColors
 
+linearLuminance :: Color -> Double
+linearLuminance c = log (luminance c + 0.05) + 3
+
 contrast :: Color -> Color -> Double
-contrast c1 c2 = (la + 0.05) / (lb + 0.05)
-  where
-    la = max l1 l2
-    lb = min l1 l2
-    l1 = luminance c1
-    l2 = luminance c2
+contrast c1 c2 = exp $ abs (linearLuminance c1 - linearLuminance c2)
 
 -- https://www.accessibility-developer-guide.com/knowledge/colours-and-contrast/text/
 perfectContrast :: Double
