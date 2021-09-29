@@ -38,7 +38,7 @@ showAnsiColor (Normal c) = [toLower $ primColorSym c]
 showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 
 displayCS :: ColorScheme -> String
-displayCS cs = unlines $ map colorLineCS primColors ++ [ruler]
+displayCS cs = unlines $ map colorLineCS primColors ++ contrastLines
   where
     displayWidth = 3
     square :: IsColor c => c -> String
@@ -57,21 +57,27 @@ displayCS cs = unlines $ map colorLineCS primColors ++ [ruler]
         nextPos = colorPos c + displayWidth
         padding = replicate (colorPos c - prevPos) ' '
     colorPos c = round (linearLuminance c * 40)
-    darkColors = map (\c -> cs ^. csColor (Normal c)) $ delete Black primColors
-    lightColors = map (\c -> cs ^. csColor (Bright c)) $ delete White primColors
-    colorGroups =
-      map
-        (sortOn linearLuminance)
-        [ [cs ^. csColor (Normal Black)]
-        , darkColors
-        , lightColors
-        , [cs ^. csColor (Bright White)]
-        , [cs ^. background]
-        ]
-    rulerPairs = zipWith mkColorPair colorGroups (tail colorGroups)
-    mkColorPair g1 g2 = (last g1, head g2)
-    ruler = join $ map (uncurry rulerPart) rulerPairs
-    rulerPart = showContrast
+    blackGroup = ("Black", [cs ^. csColor (Normal Black)])
+    darkGroup =
+      ("Dark", map (\c -> cs ^. csColor (Normal c)) $ delete Black primColors)
+    lightGroup =
+      ("Light", map (\c -> cs ^. csColor (Bright c)) $ delete White primColors)
+    whiteGroup = ("White", [cs ^. csColor (Bright White)])
+    backgroundGroup = ("Back", [cs ^. background])
+    groupPairs =
+      [ (blackGroup, lightGroup)
+      , (darkGroup, backgroundGroup)
+      , (blackGroup, darkGroup)
+      , (darkGroup, lightGroup)
+      , (lightGroup, backgroundGroup)
+      , (whiteGroup, backgroundGroup)
+      ]
+    contrastLines = map (uncurry contrastLine) groupPairs
+    contrastLine (n1, g1) (n2, g2) =
+      n1 ++ "/" ++ n2 ++ ":\t" ++ showContrast ca cb
+      where
+        (ca, cb) =
+          head $ sortOn (uncurry contrast) [(c1, c2) | c1 <- g1, c2 <- g2]
 
 showContrastCS :: ColorScheme -> AnsiColor -> AnsiColor -> String
 showContrastCS _ (Normal _) (Normal _) = ""
