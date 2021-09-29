@@ -19,6 +19,7 @@ executable pleasant-light-color-scheme
       Color
       ColorScheme
       Table
+      Utils
       Paths_pleasant_light_color_scheme
   hs-source-dirs:
       ./

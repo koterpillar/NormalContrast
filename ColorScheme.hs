@@ -14,6 +14,7 @@ import           Lens.Micro.TH
 import           Ansi
 import           AnsiColor
 import           Color
+import Utils
 
 data ColorScheme =
   ColorScheme
@@ -72,9 +73,13 @@ displayCS cs = unlines $ map colorLineCS primColors ++ contrastLines
       , (lightGroup, backgroundGroup)
       , (whiteGroup, backgroundGroup)
       ]
+    maxNameLen =
+      maximum $
+      map (length . fst) $ join $ map (\(g1, g2) -> [g1, g2]) groupPairs
     contrastLines = map (uncurry contrastLine) groupPairs
     contrastLine (n1, g1) (n2, g2) =
-      n1 ++ "/" ++ n2 ++ ":\t" ++ showContrast ca cb
+      lpad maxNameLen n1 ++
+      "/" ++ rpad maxNameLen n2 ++ ": " ++ showContrast ca cb
       where
         (ca, cb) =
           head $ sortOn (uncurry contrast) [(c1, c2) | c1 <- g1, c2 <- g2]
