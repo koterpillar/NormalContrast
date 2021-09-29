@@ -3,6 +3,8 @@
 
 module ColorScheme where
 
+import           Control.Monad
+
 import           Data.Char     (toLower, toUpper)
 import           Data.List
 
@@ -52,10 +54,24 @@ displayCS cs = unlines $ map colorLineCS primColors ++ [ruler]
     colorLine _ [] = ""
     colorLine prevPos (c:rest) = padding ++ square c ++ colorLine nextPos rest
       where
-        colorPos = round (linearLuminance c * 40)
-        nextPos = colorPos + displayWidth
-        padding = replicate (colorPos - prevPos) ' '
-    ruler = "TODO"
+        nextPos = colorPos c + displayWidth
+        padding = replicate (colorPos c - prevPos) ' '
+    colorPos c = round (linearLuminance c * 40)
+    darkColors = map (\c -> cs ^. csColor (Normal c)) $ delete Black primColors
+    lightColors = map (\c -> cs ^. csColor (Bright c)) $ delete White primColors
+    colorGroups =
+      map
+        (sortOn linearLuminance)
+        [ [cs ^. csColor (Normal Black)]
+        , darkColors
+        , lightColors
+        , [cs ^. csColor (Bright White)]
+        , [cs ^. background]
+        ]
+    rulerPairs = zipWith mkColorPair colorGroups (tail colorGroups)
+    mkColorPair g1 g2 = (last g1, head g2)
+    ruler = join $ map (uncurry rulerPart) rulerPairs
+    rulerPart = showContrast
 
 showContrastCS :: ColorScheme -> AnsiColor -> AnsiColor -> String
 showContrastCS _ (Normal _) (Normal _) = ""
