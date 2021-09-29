@@ -93,20 +93,36 @@ makeByInternal rng pred mk = head $ filter pred $ map mk rng
 mkGrey :: Int -> Color
 mkGrey v = Color v v v
 
+-- Red is special as (255, 0, 0) is still too dark
 mkRed :: Int -> Color
-mkRed v = Color v 0 0
+mkRed v0 = Color v b b
+  where
+    (b, v) = bleed 100 v0
 
 mkGreen :: Int -> Color
 mkGreen v = Color 0 v 0
 
+-- Blue is special as (0, 0, 255) is still too dark
 mkBlue :: Int -> Color
-mkBlue = Color 0 0
+mkBlue v0 = Color b b v
+  where
+    (b, v) = bleed 200 v0
+
+bleed :: Int -> Int -> (Int, Int)
+bleed extra v0 = result (v0 * (255 + extra) `div` 255)
+  where
+    result v
+      | v < 255 = (0, v)
+      | otherwise = (v - 255, 255)
 
 mkYellow :: Int -> Color
 mkYellow v = Color v v 0
 
+-- Also special (because it's green and blue?)
 mkMagenta :: Int -> Color
-mkMagenta v = Color v 0 v
+mkMagenta v0 = Color v b v
+  where
+    (b, v) = bleed 50 v0
 
 mkCyan :: Int -> Color
 mkCyan v = Color 0 v v
