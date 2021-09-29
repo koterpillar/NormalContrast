@@ -133,7 +133,7 @@ contrastCS = ColorScheme {_background = white, _colors = colors}
     colors (Normal Red) = againstBlack mkRed
     colors (Normal Green) = againstBlack mkGreen
     colors (Normal Yellow) = againstBlack mkYellow
-    colors (Normal Blue) = mkBlue 128
+    colors (Normal Blue) = againstBlack mkBlue
     colors (Normal Magenta) = againstBlack mkMagenta
     colors (Normal Cyan) = againstBlack mkCyan
     colors (Normal White) = againstBlack mkGrey
