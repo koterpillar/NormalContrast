@@ -14,7 +14,7 @@ import           Lens.Micro.TH
 import           Ansi
 import           AnsiColor
 import           Color
-import Utils
+import           Utils
 
 data ColorScheme =
   ColorScheme
@@ -84,15 +84,6 @@ displayCS cs = unlines $ map colorLineCS primColors ++ contrastLines
         (ca, cb) =
           head $ sortOn (uncurry contrast) [(c1, c2) | c1 <- g1, c2 <- g2]
 
-showContrastCS :: ColorScheme -> AnsiColor -> AnsiColor -> String
-showContrastCS _ (Normal _) (Normal _) = ""
-showContrastCS _ (Bright _) (Bright _) = ""
-showContrastCS _ (Normal c1) (Bright c2)
-  | c1 == c2 = ""
-showContrastCS _ (Bright c1) (Normal c2)
-  | c1 == c2 = ""
-showContrastCS cs c1 c2 = showContrast (cs ^. csColor c1) (cs ^. csColor c2)
-
 showContrast :: Color -> Color -> String
 showContrast c1 c2 =
   withBackFore c1 c2 "x" ++ withBackFore c2 c1 "x" ++ showD (contrast c1 c2)
@@ -124,9 +115,6 @@ naiveCS =
           Bright White -> Color 255 255 255
     }
 
--- contrast between:
--- * background and all colors
--- * all normal and all bright, pairwise
 contrastCS :: ColorScheme
 contrastCS = ColorScheme {_background = white, _colors = colors}
   where
