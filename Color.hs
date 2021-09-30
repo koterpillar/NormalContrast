@@ -56,8 +56,11 @@ goodContrast = 3.0
 lastResortContrast :: Double
 lastResortContrast = 1.7 -- experimental
 
+colorArgMax :: Int
+colorArgMax = 255
+
 colorArgRange :: [Int]
-colorArgRange = [0 .. 255]
+colorArgRange = [0 .. colorArgMax]
 
 makeByLuminance :: (Int -> Color) -> Double -> Color
 makeByLuminance mk l = makeByInternal colorArgRange luminousEnough mk
@@ -86,7 +89,9 @@ makeByInternal :: [Int] -> (Color -> Bool) -> (Int -> Color) -> Color
 makeByInternal rng pred mk = head $ filter pred $ map mk rng
 
 mkGrey :: Int -> Color
-mkGrey v = Color v v v
+mkGrey v0 = Color v v v
+  where
+    (_, v) = bleed 0 v0
 
 -- Red is special as (255, 0, 0) is still too dark
 mkRed :: Int -> Color
@@ -95,7 +100,9 @@ mkRed v0 = Color v b b
     (b, v) = bleed 100 v0
 
 mkGreen :: Int -> Color
-mkGreen v = Color 0 v 0
+mkGreen v0 = Color 0 v 0
+  where
+    (_, v) = bleed 0 v0
 
 -- Blue is special as (0, 0, 255) is still too dark
 mkBlue :: Int -> Color
@@ -104,14 +111,16 @@ mkBlue v0 = Color b b v
     (b, v) = bleed 200 v0
 
 bleed :: Int -> Int -> (Int, Int)
-bleed extra v0 = result (v0 * (255 + extra) `div` 255)
+bleed extra v0 = result (v0 * (255 + extra) `div` colorArgMax)
   where
     result v
       | v < 255 = (0, v)
       | otherwise = (v - 255, 255)
 
 mkYellow :: Int -> Color
-mkYellow v = Color v v 0
+mkYellow v0 = Color v v 0
+  where
+    (_, v) = bleed 0 v0
 
 -- Also special (because it's green and blue?)
 mkMagenta :: Int -> Color
@@ -120,4 +129,6 @@ mkMagenta v0 = Color v b v
     (b, v) = bleed 50 v0
 
 mkCyan :: Int -> Color
-mkCyan v = Color 0 v v
+mkCyan v0 = Color 0 v v
+  where
+    (_, v) = bleed 0 v0

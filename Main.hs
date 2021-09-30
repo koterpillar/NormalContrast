@@ -11,7 +11,7 @@ import           Color
 import           ColorScheme
 
 roll :: (Int -> Color) -> String
-roll mk = join [withBackground (mk v) "  " | v <- [0,2 .. 255]]
+roll mk = join [withBackground (mk v) "  " | v <- [0,2 .. colorArgMax]]
 
 main :: IO ()
 main = do

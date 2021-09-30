@@ -109,7 +109,7 @@ naiveCS =
 contrastCS :: ColorScheme
 contrastCS = ColorScheme {csBackground = white, csColor = colors}
   where
-    white = mkGrey 255
+    white = mkGrey colorArgMax
     black = mkGrey 0
     againstWhite mk = makeByContrastDark mk white goodContrast
     againstBlack mk = makeByContrastLight mk black goodContrast
