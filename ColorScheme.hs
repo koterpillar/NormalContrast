@@ -24,13 +24,14 @@ data ColorScheme =
 
 makeLenses ''ColorScheme
 
-csColor c = colors . to ($ c)
+csColor :: ColorScheme -> AnsiColor -> Color
+csColor cs = cs ^. colors
 
 sampleCS :: ColorScheme -> String
 sampleCS cs = unwords $ map showColor ansiColors
   where
     showColor c =
-      withBackFore (cs ^. background) (cs ^. csColor c) (showAnsiColor c)
+      withBackFore (cs ^. background) (csColor cs c) (showAnsiColor c)
     ansiToPrim (Normal c) = c
     ansiToPrim (Bright c) = c
 
@@ -39,31 +40,31 @@ showAnsiColor (Normal c) = [toLower $ primColorSym c]
 showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 
 displayCS :: ColorScheme -> String
-displayCS cs = unlines $ map colorLineCS primColors ++ contrastLines
+displayCS cs =
+  unlines $ map colorLineCS primColors ++ [colorLineBG] ++ contrastLines
   where
     displayWidth = 3
     square :: IsColor c => c -> String
     square c = "[" ++ withBackground c " " ++ "]"
-    colorLineCS c =
-      colorLine 0 $
-      nub
-        [ cs ^. csColor (Normal Black)
-        , cs ^. csColor (Normal c)
-        , cs ^. csColor (Bright c)
-        , cs ^. background
-        ]
-    colorLine _ [] = ""
-    colorLine prevPos (c:rest) = padding ++ square c ++ colorLine nextPos rest
+    colorLineCS c = colorLine [csColor cs (Normal c), csColor cs (Bright c)]
+    colorLineBG = colorLine [cs ^. background]
+    colorLine = colorLine' 0
+    colorLine' _ [] = ""
+    colorLine' prevPos (c:rest) = padding ++ square c ++ colorLine' nextPos rest
       where
         nextPos = colorPos c + displayWidth
         padding = replicate (colorPos c - prevPos) ' '
     colorPos c = round (linearLuminance c * 40)
-    blackGroup = ("Black", [cs ^. csColor (Normal Black)])
+    blackGroup = ("Black", [csColor cs (Normal Black)])
     darkGroup =
-      ("Dark", map (\c -> cs ^. csColor (Normal c)) $ delete Black primColors)
+      ( "Dark"
+      , map (csColor cs) $
+        map Normal (delete White $ delete Black primColors) ++ [Bright Black])
     lightGroup =
-      ("Light", map (\c -> cs ^. csColor (Bright c)) $ delete White primColors)
-    whiteGroup = ("White", [cs ^. csColor (Bright White)])
+      ( "Light"
+      , map (csColor cs) $
+        map Bright (delete White $ delete Black primColors) ++ [Normal White])
+    whiteGroup = ("White", [csColor cs (Bright White)])
     backgroundGroup = ("Back", [cs ^. background])
     groupPairs =
       [ (blackGroup, lightGroup)
@@ -73,9 +74,8 @@ displayCS cs = unlines $ map colorLineCS primColors ++ contrastLines
       , (lightGroup, backgroundGroup)
       , (whiteGroup, backgroundGroup)
       ]
-    maxNameLen =
-      maximum $
-      map (length . fst) $ join $ map (\(g1, g2) -> [g1, g2]) groupPairs
+    groups = nub $ join $ map (\(g1, g2) -> [g1, g2]) groupPairs
+    maxNameLen = maximum $ map (length . fst) groups
     contrastLines = map (uncurry contrastLine) groupPairs
     contrastLine (n1, g1) (n2, g2) =
       lpad maxNameLen n1 ++
@@ -129,8 +129,8 @@ contrastCS = ColorScheme {_background = white, _colors = colors}
     colors (Normal Blue) = againstBlack mkBlue
     colors (Normal Magenta) = againstBlack mkMagenta
     colors (Normal Cyan) = againstBlack mkCyan
-    colors (Normal White) = againstBlack mkGrey
-    colors (Bright Black) = againstWhite mkGrey
+    colors (Normal White) = againstWhite mkGrey
+    colors (Bright Black) = againstBlack mkGrey
     colors (Bright Red) = againstWhite mkRed
     colors (Bright Green) = againstWhite mkGreen
     colors (Bright Yellow) = againstWhite mkYellow
