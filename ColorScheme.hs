@@ -85,7 +85,7 @@ showD v = show $ (fromIntegral (round (v * 10)) :: Double) / 10
 naiveCS :: ColorScheme
 naiveCS =
   ColorScheme
-    { csBackground = mkGrey 255
+    { csBackground = Color 255 255 255
     , csColor =
         \case
           Normal Black -> Color 0 0 0

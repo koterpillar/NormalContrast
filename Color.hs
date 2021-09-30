@@ -57,7 +57,7 @@ lastResortContrast :: Double
 lastResortContrast = 1.7 -- experimental
 
 colorArgMax :: Int
-colorArgMax = 255
+colorArgMax = 2048
 
 colorArgRange :: [Int]
 colorArgRange = [0 .. colorArgMax]
