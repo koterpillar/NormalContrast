@@ -9,5 +9,3 @@ executable:
   source-dirs: .
   dependencies:
     - base
-    - microlens
-    - microlens-th

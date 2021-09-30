@@ -1,5 +1,4 @@
-{-# LANGUAGE LambdaCase      #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE LambdaCase #-}
 
 module ColorScheme where
 
@@ -8,9 +7,6 @@ import           Control.Monad
 import           Data.Char     (toLower, toUpper)
 import           Data.List
 
-import           Lens.Micro
-import           Lens.Micro.TH
-
 import           Ansi
 import           AnsiColor
 import           Color
@@ -18,20 +14,15 @@ import           Utils
 
 data ColorScheme =
   ColorScheme
-    { _background :: Color
-    , _colors     :: AnsiColor -> Color
+    { csBackground :: Color
+    , csColor      :: AnsiColor -> Color
     }
-
-makeLenses ''ColorScheme
-
-csColor :: ColorScheme -> AnsiColor -> Color
-csColor cs = cs ^. colors
 
 sampleCS :: ColorScheme -> String
 sampleCS cs = unwords $ map showColor ansiColors
   where
     showColor c =
-      withBackFore (cs ^. background) (csColor cs c) (showAnsiColor c)
+      withBackFore (csBackground cs) (csColor cs c) (showAnsiColor c)
     ansiToPrim (Normal c) = c
     ansiToPrim (Bright c) = c
 
@@ -47,7 +38,7 @@ displayCS cs =
     square :: IsColor c => c -> String
     square c = "[" ++ withBackground c " " ++ "]"
     colorLineCS c = colorLine [csColor cs (Normal c), csColor cs (Bright c)]
-    colorLineBG = colorLine [cs ^. background]
+    colorLineBG = colorLine [csBackground cs]
     colorLine = colorLine' 0
     colorLine' _ [] = ""
     colorLine' prevPos (c:rest) = padding ++ square c ++ colorLine' nextPos rest
@@ -65,7 +56,7 @@ displayCS cs =
       , map (csColor cs) $
         map Bright (delete White $ delete Black primColors) ++ [Normal White])
     whiteGroup = ("White", [csColor cs (Bright White)])
-    backgroundGroup = ("Back", [cs ^. background])
+    backgroundGroup = ("Back", [csBackground cs])
     groupPairs =
       [ (blackGroup, lightGroup)
       , (darkGroup, backgroundGroup)
@@ -94,8 +85,8 @@ showD v = show $ (fromIntegral (round (v * 10)) :: Double) / 10
 naiveCS :: ColorScheme
 naiveCS =
   ColorScheme
-    { _background = mkGrey 255
-    , _colors =
+    { csBackground = mkGrey 255
+    , csColor =
         \case
           Normal Black -> Color 0 0 0
           Normal Red -> Color 128 0 0
@@ -116,7 +107,7 @@ naiveCS =
     }
 
 contrastCS :: ColorScheme
-contrastCS = ColorScheme {_background = white, _colors = colors}
+contrastCS = ColorScheme {csBackground = white, csColor = colors}
   where
     white = mkGrey 255
     black = mkGrey 0
