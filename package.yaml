@@ -9,3 +9,4 @@ executable:
   source-dirs: .
   dependencies:
     - base
+    - xml

@@ -9,6 +9,7 @@ import           Ansi
 import           AnsiColor
 import           Color
 import           ColorScheme
+import           Export
 
 roll :: (Int -> Color) -> String
 roll mk =
@@ -17,10 +18,9 @@ roll mk =
 
 main :: IO ()
 main = do
-  putStrLn "Naive"
   putStrLn $ displayCS naiveCS
   traverse_
     (putStrLn . roll)
     [mkGrey, mkRed, mkGreen, mkBlue, mkCyan, mkMagenta, mkYellow, mkGrey]
-  putStrLn "Contrast white"
   putStrLn $ displayCS contrastCS
+  exportITerm contrastCS
