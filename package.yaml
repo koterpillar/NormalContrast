@@ -9,4 +9,6 @@ executable:
   source-dirs: .
   dependencies:
     - base
-    - xml
+    - containers
+    - text
+    - xml-conduit

@@ -1,33 +1,70 @@
-{-# LANGUAGE RecordWildCards #-}
-module Export (formatITerm , exportITerm) where
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
-import Control.Monad
+module Export
+  ( formatITerm
+  , exportITerm
+  ) where
 
-import Text.XML.Light
+import           Control.Monad
 
-import Color
-import ColorScheme
-import AnsiColor
+import qualified Data.Map       as Map
 
-mkText :: String -> Content
-mkText t = Text $ CData CDataText t Nothing
+import           Data.String    (fromString)
+import qualified Data.Text      as Text
+import qualified Data.Text.Lazy
+
+import           Text.XML       hiding (writeFile)
+
+import           AnsiColor
+import           Color
+import           ColorScheme
+
+mkText :: String -> Node
+mkText = NodeContent . Text.pack
+
+mkElem :: String -> Node -> Element
+mkElem name contents = Element (fromString name) Map.empty [contents]
 
 colorDict :: Color -> Element
-colorDict Color{..} = plistDict $ map mk [("Red", cRed), ("Green", cGreen), ("Blue", cBlue)]
+colorDict Color {..} =
+  plistDict $ map mk [("Red", cRed), ("Green", cGreen), ("Blue", cBlue)]
   where
-    mk (n, v) = (n ++ " Component", plistReal $ (fromIntegral v :: Double) / 255)
+    mk (n, v) =
+      (n ++ " Component", plistReal $ (fromIntegral v :: Double) / 255)
 
-plistTop :: Node t => t -> Element
-plistTop el = add_attr (Attr (QName "version" Nothing Nothing) "1.0") $ unode "plist" el
+plistTop :: Element -> Element
+plistTop el =
+  Element "plist" (Map.fromList [("version", "1.0")]) [NodeElement el]
 
 plistReal :: Double -> Element
-plistReal = unode "real" . mkText . show
+plistReal = mkElem "real" . mkText . show
+
+plistDocument :: Element -> Document
+plistDocument el =
+  Document
+    (Prologue
+       []
+       (Just
+          (Doctype
+             "plist"
+             (Just
+                (PublicID
+                   "-//Apple//DTD PLIST 1.0//EN"
+                   "http://www.apple.com/DTDs/PropertyList-1.0.dtd"))))
+       [])
+    el
+    []
 
 plistDict :: [(String, Element)] -> Element
-plistDict = unode "dict" . join . map (\(k, v) -> [unode "key" $ mkText k , v])
+plistDict =
+  Element "dict" Map.empty .
+  map NodeElement . join . map (\(k, v) -> [mkElem "key" $ mkText k, v])
 
 formatITerm :: ColorScheme -> String
-formatITerm cs = ppTopElement $ plistTop $ plistDict $ map mk ansiColors
+formatITerm cs =
+  Data.Text.Lazy.unpack $
+  renderText def $ plistDocument $ plistTop $ plistDict $ map mk ansiColors
   where
     mk c = ("Ansi " ++ show (fromEnum c) ++ " Color", colorDict $ csColor cs c)
 
