@@ -16,6 +16,7 @@ data ColorScheme =
   ColorScheme
     { csName       :: String
     , csBackground :: Color
+    , csForeground :: Color
     , csColor      :: AnsiColor -> Color
     }
 
@@ -34,13 +35,13 @@ showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 displayCS :: ColorScheme -> String
 displayCS cs =
   unlines $
-  [csName cs] ++ map colorLineCS primColors ++ [colorLineBG] ++ contrastLines
+  [csName cs] ++ map colorLineCS primColors ++ [colorLineBFG] ++ contrastLines
   where
     displayWidth = 3
     square :: IsColor c => c -> String
     square c = "[" ++ withBackground c " " ++ "]"
     colorLineCS c = colorLine [csColor cs (Normal c), csColor cs (Bright c)]
-    colorLineBG = colorLine [csBackground cs]
+    colorLineBFG = colorLine [csForeground cs, csBackground cs]
     colorLine = colorLine' 0
     colorLine' _ [] = ""
     colorLine' prevPos (c:rest) = padding ++ square c ++ colorLine' nextPos rest
@@ -89,6 +90,7 @@ naiveCS =
   ColorScheme
     { csName = "Windows XP"
     , csBackground = Color 255 255 255
+    , csForeground = Color 0 0 0
     , csColor =
         \case
           Normal Black -> Color 0 0 0
@@ -112,7 +114,11 @@ naiveCS =
 contrastCS :: ColorScheme
 contrastCS =
   ColorScheme
-    {csName = "Contrast Light", csBackground = white, csColor = colors}
+    { csName = "Contrast Light"
+    , csBackground = white
+    , csForeground = black
+    , csColor = colors
+    }
   where
     white = mkGrey colorArgMax
     black = mkGrey 0

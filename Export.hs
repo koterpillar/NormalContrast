@@ -64,7 +64,14 @@ plistDict =
 formatITerm :: ColorScheme -> String
 formatITerm cs =
   Data.Text.Lazy.unpack $
-  renderText def $ plistDocument $ plistTop $ plistDict $ map mk ansiColors
+  renderText def $
+  plistDocument $
+  plistTop $
+  plistDict $
+  map mk ansiColors ++
+  [ ("Background Color", colorDict $ csBackground cs)
+  , ("Foreground Color", colorDict $ csForeground cs)
+  ]
   where
     mk c = ("Ansi " ++ show (fromEnum c) ++ " Color", colorDict $ csColor cs c)
 
