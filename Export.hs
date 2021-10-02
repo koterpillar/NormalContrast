@@ -71,6 +71,7 @@ formatITerm cs =
   map mk ansiColors ++
   [ ("Background Color", colorDict $ csBackground cs)
   , ("Foreground Color", colorDict $ csForeground cs)
+  , ("Bold Color", colorDict $ csForeground cs)
   ]
   where
     mk c = ("Ansi " ++ show (fromEnum c) ++ " Color", colorDict $ csColor cs c)
