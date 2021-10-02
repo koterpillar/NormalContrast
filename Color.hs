@@ -93,18 +93,18 @@ mkGrey v0 = Color v v v
   where
     (_, v) = bleed 0 v0
 
--- Red is special as (255, 0, 0) is still too dark
+-- Bleed colors containing red and blue into white, otherwise they are too
+-- dark without green at all
 mkRed :: Int -> Color
 mkRed v0 = Color v b b
   where
-    (b, v) = bleed 100 v0
+    (b, v) = bleed 200 v0
 
 mkGreen :: Int -> Color
 mkGreen v0 = Color 0 v 0
   where
     (_, v) = bleed 0 v0
 
--- Blue is special as (0, 0, 255) is still too dark
 mkBlue :: Int -> Color
 mkBlue v0 = Color b b v
   where
@@ -122,11 +122,10 @@ mkYellow v0 = Color v v 0
   where
     (_, v) = bleed 0 v0
 
--- Also special (because it's green and blue?)
 mkMagenta :: Int -> Color
 mkMagenta v0 = Color v b v
   where
-    (b, v) = bleed 50 v0
+    (b, v) = bleed 200 v0
 
 mkCyan :: Int -> Color
 mkCyan v0 = Color 0 v v

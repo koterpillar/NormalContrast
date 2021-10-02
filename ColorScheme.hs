@@ -17,6 +17,8 @@ data ColorScheme =
     { csName       :: String
     , csBackground :: Color
     , csForeground :: Color
+    , csCursor     :: Color
+    , csCursorText :: Color
     , csColor      :: AnsiColor -> Color
     }
 
@@ -35,14 +37,14 @@ showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 displayCS :: ColorScheme -> String
 displayCS cs =
   unlines $
-  [csName cs] ++ map colorLineCS primColors ++ [colorLineBFG] ++ contrastLines
+  [csName cs] ++ map colorLineCS primColors ++ [colorLineMeta] ++ contrastLines
   where
     displayWidth = 3
     square :: IsColor c => c -> String
     square c = "[" ++ withBackground c " " ++ "]"
     colorLineCS c = colorLine [csColor cs (Normal c), csColor cs (Bright c)]
-    colorLineBFG = colorLine [csForeground cs, csBackground cs]
-    colorLine = colorLine' 0
+    colorLineMeta = colorLine [csForeground cs, csBackground cs, csCursor cs]
+    colorLine = colorLine' 0 . sortOn linearLuminance . nub
     colorLine' _ [] = ""
     colorLine' prevPos (c:rest) = padding ++ square c ++ colorLine' nextPos rest
       where
@@ -89,8 +91,10 @@ naiveCS :: ColorScheme
 naiveCS =
   ColorScheme
     { csName = "Windows XP"
-    , csBackground = Color 255 255 255
-    , csForeground = Color 0 0 0
+    , csBackground = black
+    , csForeground = white
+    , csCursor = white
+    , csCursorText = black
     , csColor =
         \case
           Normal Black -> Color 0 0 0
@@ -110,6 +114,9 @@ naiveCS =
           Bright Cyan -> Color 0 255 255
           Bright White -> Color 255 255 255
     }
+  where
+    black = Color 0 0 0
+    white = Color 255 255 255
 
 contrastCS :: ColorScheme
 contrastCS =
@@ -117,6 +124,8 @@ contrastCS =
     { csName = "Contrast Light"
     , csBackground = white
     , csForeground = black
+    , csCursor = makeByContrastLight mkMagenta black lastResortContrast
+    , csCursorText = white
     , csColor = colors
     }
   where

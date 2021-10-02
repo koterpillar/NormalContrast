@@ -72,6 +72,8 @@ formatITerm cs =
   [ ("Background Color", colorDict $ csBackground cs)
   , ("Foreground Color", colorDict $ csForeground cs)
   , ("Bold Color", colorDict $ csForeground cs)
+  , ("Cursor Color", colorDict $ csCursor cs)
+  , ("Cursor Text Color", colorDict $ csCursorText cs)
   ]
   where
     mk c = ("Ansi " ++ show (fromEnum c) ++ " Color", colorDict $ csColor cs c)
