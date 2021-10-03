@@ -62,13 +62,17 @@ displayCS cs =
         map Bright (delete White $ delete Black primColors) ++ [Normal White])
     whiteGroup = ("White", [csColor cs (Bright White)])
     backgroundGroup = ("Back", [csBackground cs])
+    foregroundGroup = ("Fore", [csForeground cs])
     groupPairs =
+      [ (g, backgroundGroup)
+      | g <- [blackGroup, darkGroup, lightGroup, whiteGroup]
+      ] ++
       [ (blackGroup, lightGroup)
-      , (darkGroup, backgroundGroup)
       , (blackGroup, darkGroup)
       , (darkGroup, lightGroup)
-      , (lightGroup, backgroundGroup)
-      , (whiteGroup, backgroundGroup)
+      ] ++
+      [ (foregroundGroup, g)
+      | g <- [blackGroup, darkGroup, lightGroup, whiteGroup]
       ]
     groups = nub $ join $ map (\(g1, g2) -> [g1, g2]) groupPairs
     maxNameLen = maximum $ map (length . fst) groups
