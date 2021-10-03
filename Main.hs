@@ -11,16 +11,22 @@ import           Color
 import           ColorScheme
 import           Export
 
-roll :: (Int -> Color) -> String
-roll mk =
-  join
-    [withBackground (mk v) "  " | v <- [0,colorArgMax `div` 128 .. colorArgMax]]
+roll :: (Int -> Color) -> IO ()
+roll mk = do
+  twidth <- terminalWidth
+  let lineLength = twidth - 1
+  let line =
+        join
+          [ withBackground (mk $ v * colorArgMax `div` lineLength) " "
+          | v <- [0 .. lineLength]
+          ]
+  putStrLn line
 
 main :: IO ()
 main = do
   putStrLn $ displayCS naiveCS
   traverse_
-    (putStrLn . roll)
+    roll
     [mkGrey, mkRed, mkGreen, mkBlue, mkCyan, mkMagenta, mkYellow, mkGrey]
   putStrLn $ displayCS contrastCS
   exportITerm contrastCS

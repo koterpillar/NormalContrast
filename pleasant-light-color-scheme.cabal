@@ -27,6 +27,7 @@ executable pleasant-light-color-scheme
   build-depends:
       base
     , containers
+    , terminal-size
     , text
     , xml-conduit
   default-language: Haskell2010

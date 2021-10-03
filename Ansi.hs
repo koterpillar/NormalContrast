@@ -6,9 +6,13 @@ module Ansi
   , withBackFore
   , stripColor
   , ansiLength
+  , terminalWidth
   ) where
 
 import           Data.List
+import           Data.Maybe
+
+import qualified System.Console.Terminal.Size
 
 class IsColor a where
   setForeground :: a -> String
@@ -39,3 +43,8 @@ stripColor (c:rest)      = c : stripColor rest
 
 ansiLength :: String -> Int
 ansiLength = length . stripColor
+
+terminalWidth :: IO Int
+terminalWidth =
+  System.Console.Terminal.Size.width . fromJust <$>
+  System.Console.Terminal.Size.size

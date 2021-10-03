@@ -10,5 +10,6 @@ executable:
   dependencies:
     - base
     - containers
+    - terminal-size
     - text
     - xml-conduit
