@@ -29,4 +29,4 @@ main = do
     roll
     [mkGrey, mkRed, mkGreen, mkBlue, mkCyan, mkMagenta, mkYellow, mkGrey]
   putStrLn $ displayCS contrastCS
-  exportITerm contrastCS
+  export contrastCS

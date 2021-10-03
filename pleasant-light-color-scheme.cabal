@@ -19,6 +19,7 @@ executable pleasant-light-color-scheme
       Color
       ColorScheme
       Export
+      Export.ITerm
       Table
       Utils
       Paths_pleasant_light_color_scheme
