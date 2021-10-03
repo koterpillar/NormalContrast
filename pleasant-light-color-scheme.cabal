@@ -19,6 +19,7 @@ executable pleasant-light-color-scheme
       Color
       ColorScheme
       Export
+      Export.GnomeTerminal
       Export.ITerm
       Table
       Utils
