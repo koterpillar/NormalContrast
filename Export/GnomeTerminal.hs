@@ -1,39 +1,46 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Export.GnomeTerminal
   ( formatGnomeTerminal
   , exportGnomeTerminal
   ) where
 
+import qualified Codec.Binary.UTF8.String as UTF8
+
 import           Data.List
+import           Data.Maybe
+import           Data.UUID                (UUID)
+import qualified Data.UUID                as UUID
+import qualified Data.UUID.V5             as UUID
 
 import           AnsiColor
 import           Color
 import           ColorScheme
 
-{-
-[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
-background-color='rgb(255,222,0)'
-foreground-color='rgb(59,0,255)'
-palette=['rgb(23,20,33)', 'rgb(209,120,126)', 'rgb(38,162,105)', 'rgb(162,115,76)', 'rgb(18,72,139)', 'rgb(163,71,186)', 'rgb(42,161,179)', 'rgb(208,207,204)', 'rgb(94,92,100)', 'rgb(246,97,81)', 'rgb(51,218,122)', 'rgb(233,173,12)', 'rgb(42,123,222)', 'rgb(192,97,203)', 'rgb(51,199,222)', 'rgb(255,255,255)']
-use-theme-colors=false
--}
+profileUUID :: UUID
+profileUUID = fromJust $ UUID.fromString "8fc7265c-c30f-4337-9c01-ebfcf346ba64"
+
 csProfileName :: ColorScheme -> String
-csProfileName _ = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9" -- FIXME
+csProfileName =
+  UUID.toString . UUID.generateNamed profileUUID . UTF8.encode . csName
 
 class DConf a where
   formatDConf :: a -> String
 
-instance DConf Color where
-  formatDConf Color {..} =
-    "'rgb(" ++ show cRed ++ "," ++ show cGreen ++ "," ++ show cBlue ++ ")'"
+instance {-# OVERLAPPABLE #-} DConf a => DConf [a] where
+  formatDConf items = "[" ++ intercalate ", " (map formatDConf items) ++ "]"
 
 instance DConf Bool where
   formatDConf True  = "true"
   formatDConf False = "false"
 
-instance DConf a => DConf [a] where
-  formatDConf items = "[" ++ intercalate ", " (map formatDConf items) ++ "]"
+instance DConf String where
+  formatDConf str = "'" ++ str ++ "'"
+
+instance DConf Color where
+  formatDConf Color {..} =
+    "'rgb(" ++ show cRed ++ "," ++ show cGreen ++ "," ++ show cBlue ++ ")'"
 
 dConfLine :: DConf a => String -> a -> String
 dConfLine name value = name ++ "=" ++ formatDConf value
@@ -43,6 +50,7 @@ formatGnomeTerminal cs =
   unlines
     [ "# dconf load /org/gnome/terminal/ <"
     , "[legacy/profiles:/:" ++ csProfileName cs ++ "]"
+    , dConfLine "visible-name" $ csName cs
     , dConfLine "use-theme-colors" False
     , dConfLine "background-color" $ csBackground cs
     , dConfLine "foreground-color" $ csForeground cs

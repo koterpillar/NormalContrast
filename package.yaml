@@ -12,4 +12,6 @@ executable:
     - containers
     - terminal-size
     - text
+    - utf8-string
+    - uuid
     - xml-conduit
