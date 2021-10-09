@@ -19,6 +19,8 @@ executable pleasant-light-color-scheme
       Color
       ColorScheme
       Export
+      Export.DConf
+      Export.GnomeTerminal
       Export.ITerm
       Table
       Utils
@@ -28,7 +30,10 @@ executable pleasant-light-color-scheme
   build-depends:
       base
     , containers
+    , split
     , terminal-size
     , text
+    , utf8-string
+    , uuid
     , xml-conduit
   default-language: Haskell2010
