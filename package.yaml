@@ -10,6 +10,7 @@ executable:
   dependencies:
     - base
     - containers
+    - split
     - terminal-size
     - text
     - utf8-string
