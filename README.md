@@ -1,4 +1,4 @@
-# Pleasant light color scheme
+# NormalContrast color scheme
 
 This is a terminal color scheme that:
 

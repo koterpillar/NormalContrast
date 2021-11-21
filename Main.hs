@@ -28,5 +28,5 @@ main = do
   traverse_
     roll
     [mkGrey, mkRed, mkGreen, mkBlue, mkCyan, mkMagenta, mkYellow, mkGrey]
-  putStrLn $ displayCS contrastCS
-  export contrastCS
+  putStrLn $ displayCS normalContrastCS
+  export normalContrastCS

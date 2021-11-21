@@ -4,14 +4,14 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           pleasant-light-color-scheme
+name:           NormalContrast
 version:        0.0.1
 synopsis:       Light color scheme generator
 description:    See README
 maintainer:     Alexey Kotlyarov <a@koterpillar.com>
 build-type:     Simple
 
-executable pleasant-light-color-scheme
+executable NormalContrast
   main-is: Main.hs
   other-modules:
       Ansi
@@ -24,7 +24,7 @@ executable pleasant-light-color-scheme
       Export.ITerm
       Table
       Utils
-      Paths_pleasant_light_color_scheme
+      Paths_NormalContrast
   hs-source-dirs:
       ./
   build-depends:

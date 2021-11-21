@@ -122,10 +122,10 @@ naiveCS =
     black = Color 0 0 0
     white = Color 255 255 255
 
-contrastCS :: ColorScheme
-contrastCS =
+normalContrastCS :: ColorScheme
+normalContrastCS =
   ColorScheme
-    { csName = "Contrast Light"
+    { csName = "NormalContrast Light"
     , csBackground = white
     , csForeground = black
     , csCursor = makeByContrastLight mkMagenta black lastResortContrast
