@@ -27,11 +27,9 @@ mkElem :: String -> Node -> Element
 mkElem name contents = Element (fromString name) Map.empty [contents]
 
 colorDict :: Color -> Element
-colorDict Color {..} =
-  plistDict $ map mk [("Red", cRed), ("Green", cGreen), ("Blue", cBlue)]
+colorDict c = plistDict $ zipWith mk ["Red", "Green", "Blue"] (cComponents c)
   where
-    mk (n, v) =
-      (n ++ " Component", plistReal $ (fromIntegral v :: Double) / 255)
+    mk n v = (n ++ " Component", plistReal $ (fromIntegral v :: Double) / 255)
 
 plistTop :: Element -> Element
 plistTop el =

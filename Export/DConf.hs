@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE RecordWildCards   #-}
 
 module Export.DConf where
 
@@ -24,8 +23,7 @@ instance DConf String where
   toDConf str = "'" ++ str ++ "'"
 
 instance DConf Color where
-  toDConf Color {..} =
-    "'rgb(" ++ show cRed ++ "," ++ show cGreen ++ "," ++ show cBlue ++ ")'"
+  toDConf c = "'rgb(" ++ intercalate "," (map show $ cComponents c) ++ ")'"
 
 dConfWrite :: DConf a => String -> a -> String
 dConfWrite name value = command ["dconf", "write", name, toDConf value]

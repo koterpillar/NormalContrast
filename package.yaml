@@ -9,6 +9,9 @@ executable:
   source-dirs: .
   dependencies:
     - base
+    - aeson
+    - aeson-pretty
+    - bytestring
     - containers
     - split
     - terminal-size

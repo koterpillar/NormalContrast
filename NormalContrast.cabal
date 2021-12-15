@@ -22,13 +22,17 @@ executable NormalContrast
       Export.DConf
       Export.GnomeTerminal
       Export.ITerm
+      Export.VSCode
       Table
       Utils
       Paths_NormalContrast
   hs-source-dirs:
       ./
   build-depends:
-      base
+      aeson
+    , aeson-pretty
+    , base
+    , bytestring
     , containers
     , split
     , terminal-size

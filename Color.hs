@@ -6,6 +6,10 @@ import           Data.List
 
 import           Ansi
 
+import           Numeric   (showHex)
+
+import           Utils     (lpad')
+
 data Color =
   Color
     { cRed   :: Int
@@ -14,9 +18,17 @@ data Color =
     }
   deriving (Eq, Show)
 
+cComponents :: Color -> [Int]
+cComponents Color {..} = [cRed, cGreen, cBlue]
+
 instance IsColor Color where
-  setForeground Color {..} = colorSeq [38, 2, cRed, cGreen, cBlue]
-  setBackground Color {..} = colorSeq [48, 2, cRed, cGreen, cBlue]
+  setForeground c = colorSeq $ [38, 2] ++ cComponents c
+  setBackground c = colorSeq $ [48, 2] ++ cComponents c
+
+cHex :: Color -> String
+cHex = ('#' :) . concatMap hexComponent . cComponents
+  where
+    hexComponent i = lpad' '0' 2 $ showHex i ""
 
 -- Luminance is not that easy, see https://stackoverflow.com/a/596241/288201
 -- https://contrastchecker.com/ and
