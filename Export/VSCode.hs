@@ -33,8 +33,8 @@ instance ToJSON ColorScheme where
     object $
     [ "terminal.background" .= csBackground
     , "terminal.foreground" .= csForeground
-    , "terminalCursor.background" .= csCursor
-    , "terminalCursor.foreground" .= csCursorText
+    , "terminalCursor.background" .= csCursorText
+    , "terminalCursor.foreground" .= csCursor
     ] ++
     [("terminal." <> ansiColorKey c) .= csColor c | c <- ansiColors]
     where
