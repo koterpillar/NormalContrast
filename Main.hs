@@ -1,12 +1,8 @@
-{-# LANGUAGE TemplateHaskell #-}
-
 import           Control.Monad
 
 import           Data.Foldable
-import           Data.List
 
 import           Ansi
-import           AnsiColor
 import           Color
 import           ColorScheme
 import           Export
