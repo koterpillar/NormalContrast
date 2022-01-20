@@ -98,7 +98,7 @@ makeByContrastInternal rng lumPred mk cb v = makeByInternal rng good mk
     enoughContrast c1 c2 = contrast c1 c2 >= v
 
 makeByInternal :: [Int] -> (Color -> Bool) -> (Int -> Color) -> Color
-makeByInternal rng pred mk = head $ filter pred $ map mk rng
+makeByInternal rng fn mk = head $ filter fn $ map mk rng
 
 mkGrey :: Int -> Color
 mkGrey v0 = Color v v v

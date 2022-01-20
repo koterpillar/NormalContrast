@@ -28,6 +28,9 @@ executable NormalContrast
       Paths_NormalContrast
   hs-source-dirs:
       ./
+  default-extensions:
+      OverloadedStrings
+      RecordWildCards
   build-depends:
       aeson
     , aeson-pretty

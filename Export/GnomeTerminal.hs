@@ -5,9 +5,6 @@ module Export.GnomeTerminal
 
 import qualified Codec.Binary.UTF8.String as UTF8
 
-import           Control.Monad
-
-import           Data.List
 import           Data.Maybe
 import           Data.UUID                (UUID)
 import qualified Data.UUID                as UUID

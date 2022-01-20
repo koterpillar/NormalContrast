@@ -4,6 +4,10 @@ synopsis: Light color scheme generator
 description: See README
 maintainer: Alexey Kotlyarov <a@koterpillar.com>
 
+default-extensions:
+- OverloadedStrings
+- RecordWildCards
+
 executable:
   main: Main.hs
   source-dirs: .

@@ -27,8 +27,6 @@ sampleCS cs = unwords $ map showColor ansiColors
   where
     showColor c =
       withBackFore (csBackground cs) (csColor cs c) (showAnsiColor c)
-    ansiToPrim (Normal c) = c
-    ansiToPrim (Bright c) = c
 
 showAnsiColor :: AnsiColor -> String
 showAnsiColor (Normal c) = [toLower $ primColorSym c]
@@ -89,7 +87,7 @@ showContrast c1 c2 =
   withBackFore c1 c2 "x" ++ withBackFore c2 c1 "x" ++ showD (contrast c1 c2)
 
 showD :: Double -> String
-showD v = show $ (fromIntegral (round (v * 10)) :: Double) / 10
+showD v = show $ (fromIntegral (round (v * 10) :: Integer) :: Double) / 10
 
 naiveCS :: ColorScheme
 naiveCS =

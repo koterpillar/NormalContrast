@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Export
   ( module Export.ITerm
   , module Export.GnomeTerminal
