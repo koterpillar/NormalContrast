@@ -33,7 +33,7 @@ choiceReader getName items =
         name ++ " (available: " ++ intercalate ", " (map getName items) ++ ")"
 
 readCS :: ReadM ColorScheme
-readCS = choiceReader csName [Stock.windowsXP, Stock.gnome, normalContrastCS]
+readCS = choiceReader csName [Stock.windows, Stock.gnome, normalContrastCS]
 
 csOpt :: Parser ColorScheme
 csOpt = option readCS (long "color-scheme" <> help "Color scheme")

@@ -14,25 +14,26 @@ stockDark csName csColor = ColorScheme {..}
     black = Color 0 0 0
     white = Color 255 255 255
 
-windowsXP :: ColorScheme
-windowsXP =
-  stockDark "Windows XP" $ \case
-    Normal Black   -> Color 0 0 0
-    Normal Red     -> Color 128 0 0
-    Normal Green   -> Color 0 128 0
-    Normal Yellow  -> Color 128 128 0
-    Normal Blue    -> Color 0 0 128
-    Normal Magenta -> Color 128 0 128
-    Normal Cyan    -> Color 0 128 128
-    Normal White   -> Color 192 192 192
-    Bright Black   -> Color 128 128 128
-    Bright Red     -> Color 255 0 0
-    Bright Green   -> Color 0 255 0
-    Bright Yellow  -> Color 255 255 0
-    Bright Blue    -> Color 0 0 255
-    Bright Magenta -> Color 255 0 255
-    Bright Cyan    -> Color 0 255 255
-    Bright White   -> Color 255 255 255
+-- via https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+windows :: ColorScheme
+windows =
+  stockDark "Windows" $ \case
+    Normal Black   -> Color 12 12 12
+    Normal Red     -> Color 197 15 31
+    Normal Green   -> Color 19 161 14
+    Normal Yellow  -> Color 193 156 0
+    Normal Blue    -> Color 0 55 218
+    Normal Magenta -> Color 136 23 152
+    Normal Cyan    -> Color 58 150 221
+    Normal White   -> Color 204 204 204
+    Bright Black   -> Color 118 118 118
+    Bright Red     -> Color 231 72 86
+    Bright Green   -> Color 22 198 12
+    Bright Yellow  -> Color 249 241 165
+    Bright Blue    -> Color 59 120 255
+    Bright Magenta -> Color 180 0 158
+    Bright Cyan    -> Color 97 214 214
+    Bright White   -> Color 242 242 242
 
 -- https://github.com/GNOME/gnome-terminal/blob/51994fdb014e78f5ef2aeac07eed0f71ac30dd31/src/profile-editor.cc#L226
 gnome :: ColorScheme
