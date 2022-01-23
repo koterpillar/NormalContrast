@@ -35,6 +35,26 @@ windows =
     Bright Cyan    -> Color 97 214 214
     Bright White   -> Color 242 242 242
 
+macOS :: ColorScheme
+macOS =
+  stockDark "macOS" $ \case
+    Normal Black   -> Color 0 0 0
+    Normal Red     -> Color 194 54 33
+    Normal Green   -> Color 37 188 36
+    Normal Yellow  -> Color 173 173 39
+    Normal Blue    -> Color 73 46 225
+    Normal Magenta -> Color 211 56 211
+    Normal Cyan    -> Color 51 187 200
+    Normal White   -> Color 203 204 205
+    Bright Black   -> Color 129 131 131
+    Bright Red     -> Color 252 57 31
+    Bright Green   -> Color 49 231 34
+    Bright Yellow  -> Color 234 236 35
+    Bright Blue    -> Color 88 51 255
+    Bright Magenta -> Color 249 53 248
+    Bright Cyan    -> Color 20 240 240
+    Bright White   -> Color 233 235 235
+
 -- https://github.com/GNOME/gnome-terminal/blob/51994fdb014e78f5ef2aeac07eed0f71ac30dd31/src/profile-editor.cc#L226
 gnome :: ColorScheme
 gnome =
