@@ -3,7 +3,6 @@ module Table where
 import           Control.Monad
 
 import           Ansi
-import Utils
 
 table ::
      [col]
@@ -30,4 +29,4 @@ stringTable :: [[String]] -> String
 stringTable cells = unlines $ map mkRow cells
   where
     maxWidth = maximum $ map ansiLength $ join cells
-    mkRow = unwords . map (rpad maxWidth)
+    mkRow = unwords . map (ansiRpad maxWidth)

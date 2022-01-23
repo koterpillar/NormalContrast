@@ -8,7 +8,9 @@ import           Options.Applicative
 import           Ansi
 import           Color
 import           ColorScheme
-import qualified ColorScheme.Stock   as Stock
+import           ColorScheme.Display
+import           ColorScheme.NormalContrast
+import qualified ColorScheme.Stock          as Stock
 import           Export
 
 roll :: (Int -> Color) -> IO ()

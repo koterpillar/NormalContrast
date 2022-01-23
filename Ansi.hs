@@ -6,6 +6,7 @@ module Ansi
   , withBackFore
   , stripColor
   , ansiLength
+  , ansiRpad
   , terminalWidth
   ) where
 
@@ -43,6 +44,9 @@ stripColor (c:rest)      = c : stripColor rest
 
 ansiLength :: String -> Int
 ansiLength = length . stripColor
+
+ansiRpad :: Int -> String -> String
+ansiRpad n s = s ++ replicate (n - ansiLength s) ' '
 
 terminalWidth :: IO Int
 terminalWidth =

@@ -18,6 +18,8 @@ executable NormalContrast
       AnsiColor
       Color
       ColorScheme
+      ColorScheme.Display
+      ColorScheme.NormalContrast
       ColorScheme.Stock
       Export
       Export.DConf
