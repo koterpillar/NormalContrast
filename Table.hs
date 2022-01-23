@@ -17,6 +17,9 @@ table cols rows showCol showRow cell = stringTable $ headerRow : cellRows
     cellRows = map cellRow rows
     cellRow row = showRow row : map (`cell` row) cols
 
+tableSym :: [item] -> (item -> String) -> (item -> item -> String) -> String
+tableSym items showItem = table items items showItem showItem
+
 tableShow ::
      (Show col, Show row, Show cell)
   => [col]

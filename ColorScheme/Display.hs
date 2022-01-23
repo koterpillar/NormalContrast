@@ -2,6 +2,7 @@ module ColorScheme.Display
   ( displayCS
   ) where
 
+import           Data.Char   (toLower, toUpper)
 import           Data.List
 
 import           Ansi
@@ -14,7 +15,8 @@ displayCS :: ColorScheme -> String
 displayCS cs =
   unlines $
   [csName cs] ++
-  map colorLineCS primColors ++ [colorLineMeta] ++ [contrastTable]
+  map colorLineCS primColors ++
+  [colorLineMeta] ++ [contrastTableGroup] ++ [contrastTable]
   where
     displayWidth = length $ square $ Color 0 0 0
     square :: IsColor c => c -> String
@@ -37,13 +39,24 @@ displayCS cs =
       , ("Back", [csBackground cs])
       , ("Fore", [csForeground cs])
       ]
-    contrastTable = table groups groups fst fst contrastCell
-    contrastCell (n1, g1) (n2, g2)
+    contrastTableGroup = tableSym groups fst contrastCellGroup
+    contrastCellGroup (n1, g1) (n2, g2)
       | n1 == n2 = ""
       | otherwise = showContrast ca cb
       where
         (ca, cb) =
           head $ sortOn (uncurry contrast) [(c1, c2) | c1 <- g1, c2 <- g2]
+    colors =
+      [("back", csBackground cs), ("fore", csForeground cs)] ++
+      [(showAnsiColor c, csColor cs c) | c <- ansiColors]
+    contrastTable = tableSym colors fst contrastCell
+    contrastCell (n1, c1) (n2, c2)
+      | n1 == n2 = ""
+      | otherwise = showContrast c1 c2
+
+showAnsiColor :: AnsiColor -> String
+showAnsiColor (Normal c) = [toLower $ primColorSym c]
+showAnsiColor (Bright c) = [toUpper $ primColorSym c]
 
 showContrast :: Color -> Color -> String
 showContrast c1 c2 =
