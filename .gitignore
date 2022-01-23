@@ -1,3 +1,4 @@
 *.dconf.sh
 *.itermcolors
+*.kitty.conf
 *.vscode.json
