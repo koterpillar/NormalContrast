@@ -17,6 +17,7 @@ executable:
     - aeson-pretty
     - bytestring
     - containers
+    - optparse-applicative
     - split
     - terminal-size
     - text

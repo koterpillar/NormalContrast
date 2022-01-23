@@ -38,6 +38,7 @@ executable NormalContrast
     , base
     , bytestring
     , containers
+    , optparse-applicative
     , split
     , terminal-size
     , text

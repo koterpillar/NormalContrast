@@ -1,6 +1,11 @@
 import           Control.Monad
 
 import           Data.Foldable
+import           Data.List
+
+import           Options.Applicative
+
+import           System.Environment
 
 import           Ansi
 import           Color
@@ -18,11 +23,37 @@ roll mk = do
           ]
   putStrLn line
 
-main :: IO ()
-main = do
-  putStrLn $ displayCS naiveCS
+choiceReader :: (a -> String) -> [a] -> ReadM a
+choiceReader getName items =
+  eitherReader $ \name ->
+    case find ((==) name . getName) items of
+      Just cs -> Right cs
+      Nothing ->
+        Left $
+        "Invalid choice: " ++
+        name ++ " (available: " ++ intercalate ", " (map getName items) ++ ")"
+
+readCS :: ReadM ColorScheme
+readCS = choiceReader csName [naiveCS, normalContrastCS]
+
+csOpt :: Parser ColorScheme
+csOpt = option readCS (long "color-scheme" <> help "Color scheme")
+
+mainParser :: Parser (IO ())
+mainParser =
+  subparser
+    (command "export" (info (export <$> csOpt) idm) <>
+     command "roll" (info (pure rolls) idm) <>
+     command "display" (info (display <$> csOpt) idm))
+
+rolls :: IO ()
+rolls =
   traverse_
     roll
     [mkGrey, mkRed, mkGreen, mkBlue, mkCyan, mkMagenta, mkYellow, mkGrey]
-  putStrLn $ displayCS normalContrastCS
-  export normalContrastCS
+
+display :: ColorScheme -> IO ()
+display = putStrLn . displayCS
+
+main :: IO ()
+main = join $ execParser $ info mainParser idm
