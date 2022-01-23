@@ -5,11 +5,10 @@ import           Data.List
 
 import           Options.Applicative
 
-import           System.Environment
-
 import           Ansi
 import           Color
 import           ColorScheme
+import qualified ColorScheme.Stock   as Stock
 import           Export
 
 roll :: (Int -> Color) -> IO ()
@@ -34,7 +33,7 @@ choiceReader getName items =
         name ++ " (available: " ++ intercalate ", " (map getName items) ++ ")"
 
 readCS :: ReadM ColorScheme
-readCS = choiceReader csName [naiveCS, normalContrastCS]
+readCS = choiceReader csName [Stock.windowsXP, normalContrastCS]
 
 csOpt :: Parser ColorScheme
 csOpt = option readCS (long "color-scheme" <> help "Color scheme")

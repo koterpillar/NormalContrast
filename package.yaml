@@ -5,6 +5,7 @@ description: See README
 maintainer: Alexey Kotlyarov <a@koterpillar.com>
 
 default-extensions:
+- LambdaCase
 - OverloadedStrings
 - RecordWildCards
 

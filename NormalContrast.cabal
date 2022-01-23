@@ -18,6 +18,7 @@ executable NormalContrast
       AnsiColor
       Color
       ColorScheme
+      ColorScheme.Stock
       Export
       Export.DConf
       Export.GnomeTerminal
@@ -30,6 +31,7 @@ executable NormalContrast
   hs-source-dirs:
       ./
   default-extensions:
+      LambdaCase
       OverloadedStrings
       RecordWildCards
   build-depends:
