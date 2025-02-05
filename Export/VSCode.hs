@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Export.VSCode where
 
 import           Data.Aeson
@@ -9,8 +10,7 @@ import qualified Data.ByteString          as ByteString
 
 import qualified Data.ByteString.Lazy     as LazyByteString
 
-import           Data.Text                (Text)
-import qualified Data.Text                as Text
+import           Data.String              (fromString)
 
 import           AnsiColor
 import           Color
@@ -28,17 +28,17 @@ instance ToJSON Color where
 -- https://code.visualstudio.com/api/references/theme-color#integrated-terminal-colors
 instance ToJSON ColorScheme where
   toJSON ColorScheme {..} =
-    object $
-    [ "terminal.background" .= csBackground
-    , "terminal.foreground" .= csForeground
-    , "terminalCursor.background" .= csCursorText
-    , "terminalCursor.foreground" .= csCursor
-    ] ++
-    [("terminal." <> ansiColorKey c) .= csColor c | c <- ansiColors]
+    object
+      $ [ "terminal.background" .= csBackground
+        , "terminal.foreground" .= csForeground
+        , "terminalCursor.background" .= csCursorText
+        , "terminalCursor.foreground" .= csCursor
+        ]
+          ++ [("terminal." <> ansiColorKey c) .= csColor c | c <- ansiColors]
     where
-      ansiColorKey :: AnsiColor -> Text
-      ansiColorKey (Normal c) = "ansi" <> Text.pack (show c)
-      ansiColorKey (Bright c) = "ansiBright" <> Text.pack (show c)
+      ansiColorKey :: AnsiColor -> Key
+      ansiColorKey (Normal c) = "ansi" <> fromString (show c)
+      ansiColorKey (Bright c) = "ansiBright" <> fromString (show c)
 
 exportVSCode :: ColorScheme -> IO ()
 exportVSCode cs =
