@@ -1,3 +1,3 @@
-resolver: lts-23.19
+resolver: lts-23.20
 packages:
 - .
