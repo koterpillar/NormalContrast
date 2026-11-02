@@ -4,6 +4,7 @@ module Export
 
 import           ColorScheme
 import           Export.GnomeTerminal
+import           Export.Herdr
 import           Export.ITerm
 import           Export.Kitty
 import           Export.VSCode
@@ -14,3 +15,4 @@ export cs = do
   exportITerm cs
   exportVSCode cs
   exportKitty cs
+  exportHerdr cs
